@@ -1,4 +1,4 @@
-var rtPlayer = (function(swfobject) {
+(function(swfobject) {
 
 	var rtPlayer = {
 		execOnReady:	[],
@@ -135,6 +135,8 @@ var rtPlayer = (function(swfobject) {
     rtPlayer.interface.setVolume(volume);
   };
 	
+
+  if (module) module.exports = rtPlayer;
 
 	return rtPlayer;
 
