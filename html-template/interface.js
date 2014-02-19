@@ -17,7 +17,7 @@
 				  rtPlayer.interface = rtPlayer.getFlashMovie(rtPlayer.movieName);
 	  		}
 	  		
-	  		
+	  		/*
 	  		if ('console' in window) {
 			    if (data && data.error) {
 					  console.error("%s: %s  %s (%o)", event, data.error, data ? data.id : '', data);
@@ -25,7 +25,7 @@
 					  console.log("%s: %s (%o)", event, data ? data.id : '', data);
 				  }
 			  }
-			  
+			  */
 			
 			  for (var i = 0; i < rtPlayer.eventHandlers[event].length; i++) {
 				  rtPlayer.eventHandlers[event][i](data);
@@ -87,6 +87,7 @@
 			'load_progress'
 			'security_error'
 			'io_error'
+      'volume_set'
 	*/
 	
 	rtPlayer.on = function(event, cb) {
