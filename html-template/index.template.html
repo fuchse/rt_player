@@ -122,8 +122,11 @@
                   key.style.margin = "4px";
                   key.style.padding	= "4px";
                   key.style.fontSize = "11px";
-                  key.innerHTML = loadedMedia[0].key + ": " + loadedMedia[0].metadata.name;
-    					
+                  key.innerHTML = "<strong>" + loadedMedia[0].key.toUpperCase() + "</strong>: " + loadedMedia[0].metadata.name;
+                  key.onclick = function() {
+                    rtPlayer.stop(media.id);
+                  };
+
     				  keyContainer.appendChild(key);
 				    }
         	});
@@ -139,6 +142,7 @@
         		var key = document.getElementById("key_"+media.id);
         		if (key) {
         			key.style.background = "";
+              key.style.cursor = "default";
         		}
         	});
         	
@@ -146,6 +150,7 @@
         		var key = document.getElementById("key_"+media.id);
         		if (key) {
         			key.style.background = "";
+              key.style.cursor = "default";
         		}
         	});
         	
@@ -167,7 +172,7 @@
         </script>
     </head>
     <body>
-        <div style="border: 1px solid #FF9999; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 50px;">
+        <div style="border: 1px solid #99FF99; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 50px;">
         
 	        <div id="flashContent">
 	            <p>
@@ -183,8 +188,10 @@
         
         </div>
          
-        <div style="border: 1px solid #9999FF; position: absolute; height: 30px; left: 10px; right: 10px; bottom: 10px;" id="keys">
+        <div style="border: 1px solid #9999FF; position: absolute; height: 30px; left: 10px; right: 50px; bottom: 10px;" id="keys">
         </div>
+
+        <a href="javascript:rtPlayer.stopAll();" style="display: block; border: 1px solid #FF2222; background: #FF2222; position: absolute; right: 10px; bottom: 10px; width: 30px; height: 30px;"></a>
         
    </body>
 </html>
