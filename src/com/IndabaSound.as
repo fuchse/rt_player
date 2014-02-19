@@ -17,7 +17,6 @@ package com
 		
 		public var position:Number;
 		public var duration:Number;
-		public var loadProgress:Number;
 		public var _volume:Number = 1;
 		
 		public var error:String;
@@ -47,10 +46,16 @@ package com
 			return this._volume;
 		}
 		
+		public function get loadProgress():Number
+		{
+			if (!this.bytesLoaded || this.bytesLoaded === 0) return 0;
+			if (!this.bytesTotal || this.bytesTotal === 0) return 0;
+			return this.bytesLoaded / this.bytesTotal * 100;
+		}
 		
 		public function loaded():Boolean
 		{
-			return this.bytesLoaded >= this.bytesTotal;
+			return this.loadProgress >= 100;
 		}
 		
 		public function forEvent():Object
@@ -60,7 +65,7 @@ package com
 				playing: 		this.playing || false,
 				loaded: 		this.loaded(),
 				position:		this.position || 0,
-				loadProgress: 	this.bytesLoaded / this.bytesTotal * 100,
+				loadProgress: 	this.loadProgress,
 				error:			this.error || false,
 				length:			this.length,
 				volume:			this.volume
