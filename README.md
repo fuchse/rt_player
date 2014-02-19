@@ -5,6 +5,6 @@ flash audio player - simple and works the way i need it to for a specifc project
 
 Requires SWFobject.
 
-Example at ./bin-debug/main.html
+Run `make` to see demo at http://localhost:3000/main.html.
 
-Check out ./html-template/interface.js for javascript API
+Check out ./html-template/interface.js for javascript API.
