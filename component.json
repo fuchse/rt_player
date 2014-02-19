@@ -9,6 +9,7 @@
   "license": "MIT",
   "scripts": [
     "bin-debug/swfobject.js",
+    "bin-debug/interface.js",
     "index.js"
   ],
   "files": [
