@@ -18,6 +18,7 @@ package com
 		public var position:Number;
 		public var duration:Number;
 		public var loadProgress:Number;
+		public var _volume:Number = 1;
 		
 		public var error:String;
 		
@@ -35,6 +36,18 @@ package com
 			return super.play(startTime, loops, sndTransform);
 		}
 		
+		public function set volume(vol:Number):void
+		{
+			// keep it between 0 and 1
+			this._volume = vol > 1 ? 1 : (vol < 0 ? 0 : vol);
+		}
+		
+		public function get volume():Number
+		{
+			return this._volume;
+		}
+		
+		
 		public function loaded():Boolean
 		{
 			return this.bytesLoaded >= this.bytesTotal;
@@ -49,7 +62,8 @@ package com
 				position:		this.position || 0,
 				loadProgress: 	this.bytesLoaded / this.bytesTotal * 100,
 				error:			this.error || false,
-				length:			this.length
+				length:			this.length,
+				volume:			this.volume
 			}
 		}
 		

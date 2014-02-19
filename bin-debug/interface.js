@@ -2,67 +2,69 @@
 
 	var rtPlayer = {
 		execOnReady:	[],
+    debug:        false,
+  
 		ready:			false,
 		movieName: 		'main',
-		movieCallback: 	'rtAudioEvent',
+		movieCallbackName: 	'rtAudioEvent',
 		eventHandlers: 	{}
 	};
 	
 	rtPlayer.init = function(options) {
-	  	window[rtPlayer.movieCallback] = function(event, data) {
+	  	window[rtPlayer.movieCallbackName] = function(event, data) {
 	  		if (!rtPlayer.ready && event === 'ready') {
 	  			rtPlayer.ready = true;
-				rtPlayer.interface = rtPlayer.getFlashMovie(rtPlayer.movieName);
+				  rtPlayer.interface = rtPlayer.getFlashMovie(rtPlayer.movieName);
 	  		}
 	  		
-	  		/*
+	  		
 	  		if ('console' in window) {
 			    if (data && data.error) {
-					console.error("%s: %s  %s (%o)", event, data.error, data ? data.id : '', data);
-				} else {
-					console.log("%s: %s (%o)", event, data ? data.id : '', data);
-				}
-			}
-			*/
+					  console.error("%s: %s  %s (%o)", event, data.error, data ? data.id : '', data);
+				  } else {
+					  console.log("%s: %s (%o)", event, data ? data.id : '', data);
+				  }
+			  }
+			  
 			
-			for (var i = 0; i < rtPlayer.eventHandlers[event].length; i++) {
-				rtPlayer.eventHandlers[event][i](data);
-			}
-	  	}
+			  for (var i = 0; i < rtPlayer.eventHandlers[event].length; i++) {
+				  rtPlayer.eventHandlers[event][i](data);
+		  	}
+	  	};
 	  	
 	  	if (!rtPlayer.interface && swfobject) {
-		    var swfVersionStr = options.swfVersionStr;
-		    var xiSwfUrlStr = options.expressInstallSwf;
+		    var swfVersionStr = options.swfobject.swfVersionStr;
+		    var xiSwfUrlStr = options.swfobject.expressInstallSwf;
 		    
 		    var flashvars = {};
-		    flashvars.eiCallback = rtPlayer.movieCallback;
-		    flashvars.stopOnMultiShot = options.stopOnMultiShot;
-		    flashvars.debug = options.debug;
+		    flashvars.eiCallback = options.moveCallbackName || rtPlayer.movieCallbackName;
+		    flashvars.stopOnMultiShot = options.stopOnMultiShot || rtPlayer.stopOnMultiShot;
+		    flashvars.debug = options.debug || rtPlayer.debug;
 		    
 		    var params = {};
 		    params.quality = "high";
-		    params.bgcolor = options.bgColor;
+		    params.bgcolor = options.swfobject.bgColor;
 		    params.allowscriptaccess = "always";
 		    params.allowfullscreen = "true";
 		    
 		    var attributes = {};
-		    attributes.id = options.movieName;
-		    attributes.name = options.movieName;
+		    attributes.id = options.swfobject.movieName;
+		    attributes.name = options.swfobject.movieName;
 		    attributes.align = "middle";
 		    
 		    swfobject.embedSWF(
-		    	options.swf+".swf",
-		    	options.containerId, 
-		        options.width,
-		        options.height,
-		        swfVersionStr,
-		        xiSwfUrlStr, 
-		        flashvars,
-		        params,
-		        attributes
+		    	options.swfobject.swf,
+		    	options.swfobject.containerId, 
+          options.swfobject.width,
+          options.swfobject.height,
+          swfVersionStr,
+          xiSwfUrlStr, 
+          flashvars,
+          params,
+          attributes
 		    );
 		    
-		    swfobject.createCSS('#'+options.containerId, "display:block;text-align:left;");
+		    swfobject.createCSS('#'+options.swfobject.containerId, "display:block;text-align:left;");
 	    }
 	}
 	
@@ -102,8 +104,8 @@
 	};
   	
 	
-	rtPlayer.load = function(media) {
-		rtPlayer.interface.load(media);
+	rtPlayer.load = function(media, options) {
+		rtPlayer.interface.load(media, options);
 	};
 	
 	rtPlayer.unload = function(idOrIds) {
@@ -115,8 +117,8 @@
 	};
 	
 	
-	rtPlayer.play = function(idOrIds) {
-		rtPlayer.interface.play(idOrIds);
+	rtPlayer.play = function(idOrIds, options) {
+		rtPlayer.interface.play(idOrIds, options);
 	};
 	
 	rtPlayer.stop = function(idOrIds) {
@@ -126,6 +128,11 @@
 	rtPlayer.stopAll = function() {
 		rtPlayer.interface.stopAll();
 	};
+
+
+  rtPlayer.setVolume = function(volume) {
+    rtPlayer.interface.setVolume(volume);
+  };
 	
 	
 	window.rtPlayer = rtPlayer;

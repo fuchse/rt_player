@@ -12,6 +12,7 @@ package
 	import flash.events.SecurityErrorEvent;
 	import flash.external.ExternalInterface;
 	import flash.media.SoundChannel;
+	import flash.media.SoundTransform;
 	import flash.net.URLRequest;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -67,16 +68,16 @@ package
 		
 		private function loop(event:Event):void
 		{
-			for(var id:String in this.sounds)
+			for each(var sound:IndabaSound in this.sounds)
 			{
-				if (this.sounds[id].playing)
+				if (sound.playing)
 				{
-					this.sounds[id].position = this.channels[id].position;
-					eiEvent("playing", this.sounds[id].forEvent());
-					if (Math.ceil(this.channels[id].position) >= Math.ceil(this.sounds[id].length))
+					sound.position = this.channels[sound.id].position;
+					eiEvent("playing", sound.forEvent());
+					if (Math.ceil(this.channels[sound.id].position) >= Math.ceil(sound.length))
 					{
-						this.sounds[id].playing = false;
-						eiEvent("finished", this.sounds[id].forEvent());
+						sound.playing = false;
+						eiEvent("finished", sound.forEvent());
 					}
 				}
 			}
@@ -111,11 +112,13 @@ package
 			ExternalInterface.addCallback('stop',		stop);
 			ExternalInterface.addCallback('stopAll',	stopAll);
 			
-			eiEvent('ready', { methods: ['load','unload','unloadAll','play','stop','stopAll'] });
+			ExternalInterface.addCallback('setVolume',  setVolume);
+			
+			eiEvent('ready', { methods: ['load','unload','unloadAll','play','stop','stopAll','setVolume'] });
 		}
 		
 		
-		private function load(fileOrFiles:*):Number
+		private function load(fileOrFiles:*, options:Object = null):Number
 		{
 			var files:Array = getQualifiedClassName(fileOrFiles) === "Object" ? new Array(fileOrFiles) : fileOrFiles;
 			
@@ -131,6 +134,8 @@ package
 				sound.addEventListener(IOErrorEvent.IO_ERROR, soundIOError);
 				
 				sound.load(new URLRequest(file.media_url));
+				
+				if (options && options.volume) sound.volume = options.volume;
 				
 				this.sounds[sound.id]	= sound;
 				this.channels[sound.id] = new SoundChannel();
@@ -188,17 +193,19 @@ package
 		}
 		
 		
-		private function play(fileIdOrIds:*):void
+		private function play(fileIdOrIds:*, options:Object = null):void
 		{
 			var fileIds:Array = getQualifiedClassName(fileIdOrIds) === "String" ? new Array(fileIdOrIds) : fileIdOrIds;
 			
-			for (var i:Number = 0; i < fileIds.length; i++) {
+			for (var i:Number = 0; i < fileIds.length; i++)
+			{
 				if (this.sounds[fileIds[i]]) {
 					if (this.stopOnMultiShot && this.channels[fileIds[i]])
 					{
 						this.channels[fileIds[i]].stop();
 					}
 					this.channels[fileIds[i]] = this.sounds[fileIds[i]].play(0);
+					if (options && options.volume) this.setVolume(options.volume, fileIds[i])
 					eiEvent("play", this.sounds[fileIds[i]].forEvent());
 				} else {
 					eiEvent("play_error", { error: "no sound with specified id", id: fileIds[i] });
@@ -210,7 +217,8 @@ package
 		{
 			var fileIds:Array = getQualifiedClassName(fileIdOrIds) === "String" ? new Array(fileIdOrIds) : fileIdOrIds;
 			
-			for (var i:Number = 0; i < fileIds.length; i++) {
+			for (var i:Number = 0; i < fileIds.length; i++)
+			{
 				if (this.sounds[fileIds[i]]) {
 					this.channels[fileIds[i]].stop();
 					this.sounds[fileIds[i]].playing = false;
@@ -226,7 +234,27 @@ package
 			this.stop( Utils.getKeys(this.channels) );
 		}
 		
+		private function setVolume(volume:Number, fileIdOrIds:* = null):void
+		{
+			if (fileIdOrIds == null) {
+				for (var fileId:String in this.channels)
+				{
+					this.sounds[fileId].volume = volume;
+					if (this.channels[fileId]) this.channels[fileId].soundTransform = new SoundTransform(this.sounds[fileId].volume);
+					eiEvent("volume_set", this.sounds[fileId].forEvent());
+				}
+			} else {
+				var fileIds:Array = getQualifiedClassName(fileIdOrIds) === "String" ? new Array(fileIdOrIds) : fileIdOrIds;
+				for (var j:Number = 0; j < fileIds.length; j++)
+				{
+					this.sounds[fileIds[j]].volume = volume;
+					if (this.channels[fileIds[j]]) this.channels[fileIds[j]].soundTransform = new SoundTransform(this.sounds[fileIds[j]].volume);
+					eiEvent("volume_set", this.sounds[fileIds[j]].forEvent());
+				}
+			}
+		}
 		
+		                
 		private function soundLoadComplete(event:Event):void
 		{
 			event.target.removeEventListener(Event.COMPLETE, soundLoadComplete);

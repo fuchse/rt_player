@@ -39,62 +39,64 @@
         <script type="text/javascript" src="interface.js"></script>
         <script type="text/javascript">
 			    		
-			var testMedia = [
-				{
-				  key: 'q', 
-				  _id:  "52fbd9c2e4b0cb781ce3c026",
-				  media_url: "https://s3.amazonaws.com/trio-converse/d6084e41-2480-4dce-8038-27aafb271294/d6084e41-2480-4dce-8038-27aafb271294-transcoded.mp3",
-				  metadata: {
-				  	type: "one_shot",
-				    name: "Guitar Chord Long"
-				  }
-				},
-				{
-				  key: 'w',
-				  _id:  "52fbda24e4b0cb781ce3c02c",
-				  media_url: "https://s3.amazonaws.com/trio-converse/4ef35ee7-550d-434d-8ab7-204b3a00a15b/4ef35ee7-550d-434d-8ab7-204b3a00a15b-transcoded.mp3",
-				  metadata: {
-				  	type: "one_shot",
-				    name: "Thawp"
-				  }
-				},
-				{
-				  key: 'e',
-				  _id:  "52fbd9bbe4b0cb781ce3c024",
-				  media_url: "https://s3.amazonaws.com/trio-converse/b6ecf535-f73f-4e41-92b2-e26f2eb5d3f6/b6ecf535-f73f-4e41-92b2-e26f2eb5d3f6-transcoded.mp3",
-				  metadata: {
-				  	type: "one_shot",
-				    name: "Crash"
-				  }
-				},
-				{
-				  key: 'r',
-				  _id:  "52fbda07e4b0cb781ce3c02a",
-				  media_url: "https://s3.amazonaws.com/trio-converse/910fbb06-2e84-42af-badf-c9ae4c102db7/910fbb06-2e84-42af-badf-c9ae4c102db7-transcoded.mp3",
-				  metadata: {
-				  	type: "one_shot",
-				    name: "Piano Chord Long"
-				  }
-				},
-				{
-				  key: 't',
-				  _id:  "52fbd9b1e4b0209ffabab879",
-				  media_url: "https://s3.amazonaws.com/trio-converse/f81d0368-ac63-437a-a6de-4a7db51025a5/f81d0368-ac63-437a-a6de-4a7db51025a5-transcoded.mp3",
-				  metadata: {
-				  	type: "one_shot",
-				    name: "Big Snare"
-				  }
-				},
-				{
-				  key: 'y',
-				  _id:  "52fbd9dce4b0209ffabab87f",
-				  media_url: "https://s3.amazonaws.com/trio-converse/ea90bcca-ffec-4032-af2c-2a9fa499ab33/ea90bcca-ffec-4032-af2c-2a9fa499ab33-transcoded.mp3",
-				  metadata: {
-				  	type: "one_shot",
-				    name: "Guitar Strum"
-				  }
-				}
-			];
+          var testMedia = [
+            {
+              key: 'q', 
+              _id:  "52fbd9c2e4b0cb781ce3c026",
+              media_url: "https://s3.amazonaws.com/trio-converse/d6084e41-2480-4dce-8038-27aafb271294/d6084e41-2480-4dce-8038-27aafb271294-transcoded.mp3",
+              volume: 0.25,
+              metadata: {
+                type: "one_shot",
+                name: "Guitar Chord Long"
+              }
+            },
+            {
+              key: 'w',
+              _id:  "52fbda24e4b0cb781ce3c02c",
+              media_url: "https://s3.amazonaws.com/trio-converse/4ef35ee7-550d-434d-8ab7-204b3a00a15b/4ef35ee7-550d-434d-8ab7-204b3a00a15b-transcoded.mp3",
+              volume: 0.5,
+              metadata: {
+                type: "one_shot",
+                name: "Thawp"
+              }
+            },
+            {
+              key: 'e',
+              _id:  "52fbd9bbe4b0cb781ce3c024",
+              media_url: "https://s3.amazonaws.com/trio-converse/b6ecf535-f73f-4e41-92b2-e26f2eb5d3f6/b6ecf535-f73f-4e41-92b2-e26f2eb5d3f6-transcoded.mp3",
+              metadata: {
+                type: "one_shot",
+                name: "Crash"
+              }
+            },
+            {
+              key: 'r',
+              _id:  "52fbda07e4b0cb781ce3c02a",
+              media_url: "https://s3.amazonaws.com/trio-converse/910fbb06-2e84-42af-badf-c9ae4c102db7/910fbb06-2e84-42af-badf-c9ae4c102db7-transcoded.mp3",
+              metadata: {
+                type: "one_shot",
+                name: "Piano Chord Long"
+              }
+            },
+            {
+              key: 't',
+              _id:  "52fbd9b1e4b0209ffabab879",
+              media_url: "https://s3.amazonaws.com/trio-converse/f81d0368-ac63-437a-a6de-4a7db51025a5/f81d0368-ac63-437a-a6de-4a7db51025a5-transcoded.mp3",
+              metadata: {
+                type: "one_shot",
+                name: "Big Snare"
+              }
+            },
+            {
+              key: 'y',
+              _id:  "52fbd9dce4b0209ffabab87f",
+              media_url: "https://s3.amazonaws.com/trio-converse/ea90bcca-ffec-4032-af2c-2a9fa499ab33/ea90bcca-ffec-4032-af2c-2a9fa499ab33-transcoded.mp3",
+              metadata: {
+                type: "one_shot",
+                name: "Guitar Strum"
+              }
+            }
+          ];
         	
         	rtPlayer.on('ready', function() {
         		rtPlayer.load(testMedia);
@@ -105,25 +107,25 @@
         	});
         	
         	rtPlayer.on('loaded', function(media) {
-        		var loadedMedia = testMedia.filter(function(m){ return m._id === media.id }),
-        			keyContainer = document.getElementById('keys');
+        	  var loadedMedia = testMedia.filter(function(m){ return m._id === media.id }),
+        			  keyContainer = document.getElementById('keys');
         			
-				if (loadedMedia) {
-	    			Mousetrap.bind(loadedMedia[0].key, function() {
-	    				rtPlayer.play(loadedMedia[0]._id);
-	    			});
+				    if (loadedMedia) {
+              Mousetrap.bind(loadedMedia[0].key, function() {
+                rtPlayer.play(loadedMedia[0]._id, typeof(loadedMedia[0].volume) != 'undefined' ? { volume: loadedMedia[0].volume } : null);
+	    			  });
 	    			
-    				var key = document.createElement('span');
-    					key.id				= "key_"+loadedMedia[0]._id;
-    					key.style.display	= "block";
-						key.style.float		= "left";
-						key.style.margin	= "4px";
-						key.style.padding	= "4px";
-						key.style.fontSize	= "11px";
-    					key.innerHTML = loadedMedia[0].key + ": " + loadedMedia[0].metadata.name;
+    				  var key = document.createElement('span');
+                  key.id = "key_"+loadedMedia[0]._id;
+                  key.style.display	= "block";
+                  key.style.float	= "left";
+                  key.style.margin = "4px";
+                  key.style.padding	= "4px";
+                  key.style.fontSize = "11px";
+                  key.innerHTML = loadedMedia[0].key + ": " + loadedMedia[0].metadata.name;
     					
-    				keyContainer.appendChild(key);
-				}
+    				  keyContainer.appendChild(key);
+				    }
         	});
         	
         	rtPlayer.on('play', function(media) {
@@ -147,16 +149,19 @@
         		}
         	});
         	
-        	rtPlayer.init({
-        		containerId: 		"flashContent",
-        		movieName: 			"main",
-        		swf:				"main",
-        		swfVersionStr: 		"11.4.0",
-        		expressInstallSwf:	"playerProductInstall.swf",
-        		height:				"100%",
-        		width:				"100%",
-        		bgColor:			"#ffffff",
-        		debug:				true
+          rtPlayer.init({
+            swfobject: {
+              containerId: 		    "flashContent",
+              movieName: 			    "main",
+              swf:				        "main.swf",
+              swfVersionStr: 		  "11.4.0",
+              expressInstallSwf:	"playerProductInstall.swf",
+              height:				      "100%",
+              width:				      "100%",
+              bgColor:			      "#ffffff"
+            },
+            debug:  true,
+            volume: 50
         	});
         	
         </script>
