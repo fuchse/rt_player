@@ -1,4 +1,4 @@
-(function() {
+var rtPlayer = (function(swfobject) {
 
 	var rtPlayer = {
 		execOnReady:	[],
@@ -135,7 +135,7 @@
     rtPlayer.interface.setVolume(volume);
   };
 	
-	
-	window.rtPlayer = rtPlayer;
 
-})();
+	return rtPlayer;
+
+}(swfobject));
