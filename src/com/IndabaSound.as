@@ -18,6 +18,7 @@ package com
 		public var position:Number;
 		public var duration:Number;
 		public var _volume:Number = 1;
+		public var loop:Number = 0;
 		
 		public var error:String;
 		
@@ -68,7 +69,8 @@ package com
 				loadProgress: 	this.loadProgress,
 				error:			this.error || false,
 				length:			this.length,
-				volume:			this.volume
+				volume:			this.volume,
+				loop:			this.loop
 			}
 		}
 		

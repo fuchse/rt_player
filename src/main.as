@@ -62,6 +62,7 @@ package
 				stage.addChild(statusTF);
 			}
 			
+			// TODO - switch timing function to Timer instead of Enter Frame
 			stage.addEventListener(Event.ENTER_FRAME, loop);
 			initExternalInterface();
 		}
@@ -135,7 +136,11 @@ package
 				
 				sound.load(new URLRequest(file.media_url));
 				
-				if (options && options.volume) sound.volume = options.volume;
+				if (options)
+				{
+					if (options.volume) sound.volume = options.volume;
+					if (options.loop) sound.loop = options.loop;
+				}
 				
 				this.sounds[sound.id]	= sound;
 				this.channels[sound.id] = new SoundChannel();
@@ -204,9 +209,18 @@ package
 					{
 						this.channels[fileIds[i]].stop();
 					}
-					this.channels[fileIds[i]] = this.sounds[fileIds[i]].play(0);
-					if (options && options.volume) this.setVolume(options.volume, fileIds[i])
-					eiEvent("play", this.sounds[fileIds[i]].forEvent());
+					if (options)
+					{
+						if (options.volume) this.sounds[fileIds[i]].volume = options.volume;
+						if (options.loop) this.sounds[fileIds[i]].loop = options.loop;
+					}
+					if (this.sounds[fileIds[i]].loop > 0 && this.sounds[fileIds[i]].playing) {
+						// playing already
+					} else {
+						var soundTransform:SoundTransform = new SoundTransform(this.sounds[fileIds[i]].volume);
+						this.channels[fileIds[i]] = this.sounds[fileIds[i]].play(0, this.sounds[fileIds[i]].loop, soundTransform);
+						eiEvent("play", this.sounds[fileIds[i]].forEvent());
+					}
 				} else {
 					eiEvent("play_error", { error: "no sound with specified id", id: fileIds[i] });
 				}

@@ -45,6 +45,7 @@
               _id:  "52fbd9c2e4b0cb781ce3c026",
               media_url: "https://s3.amazonaws.com/trio-converse/d6084e41-2480-4dce-8038-27aafb271294/d6084e41-2480-4dce-8038-27aafb271294-transcoded.mp3",
               volume: 0.25,
+              loop: 3,
               metadata: {
                 type: "one_shot",
                 name: "Guitar Chord Long"
@@ -55,6 +56,7 @@
               _id:  "52fbda24e4b0cb781ce3c02c",
               media_url: "https://s3.amazonaws.com/trio-converse/4ef35ee7-550d-434d-8ab7-204b3a00a15b/4ef35ee7-550d-434d-8ab7-204b3a00a15b-transcoded.mp3",
               volume: 0.5,
+              loop: 10000,
               metadata: {
                 type: "one_shot",
                 name: "Thawp"
@@ -112,7 +114,11 @@
         			
 				    if (loadedMedia) {
               Mousetrap.bind(loadedMedia[0].key, function() {
-                rtPlayer.play(loadedMedia[0]._id, typeof(loadedMedia[0].volume) != 'undefined' ? { volume: loadedMedia[0].volume } : null);
+                var options = {};
+                if (typeof(loadedMedia[0].volume) != 'undefined') options.volume = loadedMedia[0].volume;
+                if (typeof(loadedMedia[0].loop) != 'undefined') options.loop = loadedMedia[0].loop;
+
+                rtPlayer.play(loadedMedia[0]._id, options);
 	    			  });
 	    			
     				  var key = document.createElement('span');
