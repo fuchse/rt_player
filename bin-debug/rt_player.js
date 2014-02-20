@@ -266,9 +266,6 @@ var rtPlayer = (function(swfobject) {
   };
 
 
-
-
-
   if (typeof(module) != 'undefined') module.exports = rtPlayer;
 
 	return rtPlayer;
