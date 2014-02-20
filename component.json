@@ -8,7 +8,7 @@
   "development": {},
   "license": "MIT",
   "scripts": [
-    "bin-debug/interface.js",
+    "bin-debug/rt_player.js",
     "index.js"
   ],
   "files": [
