@@ -13,6 +13,7 @@ var rtPlayer = (function(swfobject) {
 	var rtPlayer = {
     ready         : false,
 		execOnReady   : [],
+    sounds        : {},
 		eventHandlers : {}
 	};
 	
@@ -47,16 +48,27 @@ var rtPlayer = (function(swfobject) {
       	  	return (isIE) ? window[rtPlayer.swfOptions.movieName] : document[rtPlayer.swfOptions.movieName];
           }());
 	  		}
-	  		
+
         if (data && data.error) {
           rtPlayer.error("%s: %s  %s (%o)", event, data.error, data ? data.id : '', data);
         } else {
           rtPlayer.log("%s: %s (%o)", event, data ? data.id : '', data);
         }
 
-			  for (var i = 0; i < rtPlayer.eventHandlers[event].length; i++) {
-				  rtPlayer.eventHandlers[event][i](data);
-		  	}
+        if (rtPlayer.eventHandlers[event]) {
+  			  for (var i = 0; i < rtPlayer.eventHandlers[event].length; i++) {
+	  			  if (typeof(rtPlayer.eventHandlers[event][i]) === 'function') rtPlayer.eventHandlers[event][i](data);
+		    	}
+        }
+
+        if (data && data.id) {
+          var sound = rtPlayer.sounds[data.id];
+          if (sound.eventHandlers[event]) {
+            for (var j = 0; j < sound.eventHandlers[event].length; j++) {
+              if (typeof(sound.eventHandlers[event][j])) sound.eventHandlers[event][j](data);
+            }
+          }
+        }
 	  	};
 
       if (document.getElementById(rtPlayer.swfOptions.containerId)) {
@@ -104,9 +116,9 @@ var rtPlayer = (function(swfobject) {
             rtPlayer.swfOptions.attributes,
             function(event) {
               if (event.success) {
-                rtPlayer.log('rtPlayer SWF embedded', event);
+                rtPlayer.log('rtPlayer SWF embedded %o', event);
               } else {
-                rtPlayer.error('rtPlayer SWF not embedded', event);
+                rtPlayer.error('rtPlayer SWF not embedded %o', event);
               }
             } 
           );
@@ -135,6 +147,7 @@ var rtPlayer = (function(swfobject) {
 		valid events:
 			'ready'
 			'load'
+      'load_start'
 			'unload'
 			'play'
 			'stop'
@@ -165,8 +178,9 @@ var rtPlayer = (function(swfobject) {
   rtPlayer.removeEventListener = rtPlayer.off;
   	
 	
-	rtPlayer.load = function(media, options) {
-		rtPlayer.movie.load(media, options);
+	rtPlayer.load = function(url, options) {
+    options.autoLoad = true;
+    return new RtPlayerSound(url, options);
 	};
 	
 	rtPlayer.unload = function(idOrIds) {
@@ -195,6 +209,62 @@ var rtPlayer = (function(swfobject) {
     rtPlayer.movie.setVolume(volume);
   };
 	
+
+
+  var RtPlayerSound = function(url, options) {
+    options = extend({
+      autoLoad: false
+    }, options);
+
+    this.url = url;
+    this.id = options.id || options._id || this.url;
+    
+    if (rtPlayer.sounds[this.id]) return rtPlayer.sounds[this.id];
+
+    this.options = options;
+    this.eventHandlers = {};
+
+    rtPlayer.sounds[this.id] = this;
+
+    if (options.autoLoad) this.load();
+
+    return this;
+  };
+
+	RtPlayerSound.prototype.on = function(event, cb) {
+		if (this.eventHandlers[event] && this.eventHandlers[event] === cb) return;
+		if (!this.eventHandlers[event]) this.eventHandlers[event] = [];
+		
+		this.eventHandlers[event].push(cb);
+	};
+	
+	RtPlayerSound.prototype.off = function(event, cb) {
+		var index = this.eventHandlers[event].indexOf(cb);
+		if (index !== -1) {
+			this.eventHandlers[event].splice(index, 1);
+		}
+	};
+
+
+  RtPlayerSound.prototype.toFlash = function() {
+    return {
+      _id: this.id,
+      media_url: this.url
+    }
+  };
+
+  RtPlayerSound.prototype.load = function(options) {
+    rtPlayer.movie.load(this.toFlash());
+  };
+
+  RtPlayerSound.prototype.play = function(options) {
+    rtPlayer.play(this.id, options)
+  };
+
+  RtPlayerSound.prototype.stop = function() {
+    rtPlayer.stop(this.id);
+  };
+
 
   if (typeof(module) != 'undefined') module.exports = rtPlayer;
 

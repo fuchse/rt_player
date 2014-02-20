@@ -42,7 +42,7 @@
           var testMedia = [
             {
               key: 'q', 
-              _id:  "52fbd9c2e4b0cb781ce3c026",
+              id:  "52fbd9c2e4b0cb781ce3c026",
               media_url: "https://s3.amazonaws.com/trio-converse/d6084e41-2480-4dce-8038-27aafb271294/d6084e41-2480-4dce-8038-27aafb271294-transcoded.mp3",
               volume: 0.25,
               loop: 3,
@@ -53,7 +53,7 @@
             },
             {
               key: 'w',
-              _id:  "52fbda24e4b0cb781ce3c02c",
+              id:  "52fbda24e4b0cb781ce3c02c",
               media_url: "https://s3.amazonaws.com/trio-converse/4ef35ee7-550d-434d-8ab7-204b3a00a15b/4ef35ee7-550d-434d-8ab7-204b3a00a15b-transcoded.mp3",
               volume: 0.5,
               loop: 10000,
@@ -64,7 +64,7 @@
             },
             {
               key: 'e',
-              _id:  "52fbd9bbe4b0cb781ce3c024",
+              id:  "52fbd9bbe4b0cb781ce3c024",
               media_url: "https://s3.amazonaws.com/trio-converse/b6ecf535-f73f-4e41-92b2-e26f2eb5d3f6/b6ecf535-f73f-4e41-92b2-e26f2eb5d3f6-transcoded.mp3",
               metadata: {
                 type: "one_shot",
@@ -73,7 +73,7 @@
             },
             {
               key: 'r',
-              _id:  "52fbda07e4b0cb781ce3c02a",
+              id:  "52fbda07e4b0cb781ce3c02a",
               media_url: "https://s3.amazonaws.com/trio-converse/910fbb06-2e84-42af-badf-c9ae4c102db7/910fbb06-2e84-42af-badf-c9ae4c102db7-transcoded.mp3",
               metadata: {
                 type: "one_shot",
@@ -82,7 +82,7 @@
             },
             {
               key: 't',
-              _id:  "52fbd9b1e4b0209ffabab879",
+              id:  "52fbd9b1e4b0209ffabab879",
               media_url: "https://s3.amazonaws.com/trio-converse/f81d0368-ac63-437a-a6de-4a7db51025a5/f81d0368-ac63-437a-a6de-4a7db51025a5-transcoded.mp3",
               metadata: {
                 type: "one_shot",
@@ -91,7 +91,7 @@
             },
             {
               key: 'y',
-              _id:  "52fbd9dce4b0209ffabab87f",
+              id:  "52fbd9dce4b0209ffabab87f",
               media_url: "https://s3.amazonaws.com/trio-converse/ea90bcca-ffec-4032-af2c-2a9fa499ab33/ea90bcca-ffec-4032-af2c-2a9fa499ab33-transcoded.mp3",
               metadata: {
                 type: "one_shot",
@@ -99,68 +99,73 @@
               }
             }
           ];
-        	
-        	rtPlayer.on('ready', function() {
-        		rtPlayer.load(testMedia);
+
+
+          rtPlayer.on('ready', function() {
+            
+            var keyContainer = document.getElementById('keys');
+
+            for(var i = 0; i < testMedia.length; i++) {
+
+              var sound = rtPlayer.load(testMedia[i].media_url, testMedia[i]);
+
+              var key = document.createElement('span');
+
+              key.style.display	= "block";
+              key.style.float	= "left";
+              key.style.margin = "4px";
+              key.style.padding	= "4px";
+              key.style.fontSize = "11px";
+              key.onclick = function() {
+                sound.stop();
+              };
+              key.innerHTML = "<strong>" + testMedia[i].key.toUpperCase() + "</strong>: " + testMedia[i].metadata.name;
+
+              keyContainer.appendChild(key);
+              
+              sound.on('load', function(data) {
+                var loadedMedia = testMedia.filter(function(m){ return m.id === data.id });
+                if (loadedMedia) {
+                  Mousetrap.bind(loadedMedia[0].key, function() {
+                    var options = {};
+                    if (typeof(loadedMedia[0].volume) != 'undefined') options.volume = loadedMedia[0].volume;
+                    if (typeof(loadedMedia[0].loop) != 'undefined') options.loop = loadedMedia[0].loop;
+
+                    rtPlayer.play(loadedMedia[0].id, options);
+                  });
+                }
+              });
+              
+              sound.on('play', (function(k){
+                return function() {
+          			  k.style.background = "#FF2222";
+                  k.style.cursor = "pointer";
+                }
+              }(key)));
+                  
+              
+              sound.on('stop', (function(k){
+                return function() {
+                  k.style.background = "";
+                  k.style.cursor = "default";
+                }
+              }(key)));
+        	    
+              sound.on('finish', (function(k) {
+                return function() {
+          			  k.style.background = "";
+                  k.style.cursor = "default";
+                }
+              }(key)));
+
+            }
         		
         		Mousetrap.bind('esc', function() {
         			rtPlayer.stopAll();
         		});
         	});
-        	
-        	rtPlayer.on('loaded', function(media) {
-        	  var loadedMedia = testMedia.filter(function(m){ return m._id === media.id }),
-        			  keyContainer = document.getElementById('keys');
-        			
-				    if (loadedMedia) {
-              Mousetrap.bind(loadedMedia[0].key, function() {
-                var options = {};
-                if (typeof(loadedMedia[0].volume) != 'undefined') options.volume = loadedMedia[0].volume;
-                if (typeof(loadedMedia[0].loop) != 'undefined') options.loop = loadedMedia[0].loop;
 
-                rtPlayer.play(loadedMedia[0]._id, options);
-	    			  });
-	    			
-    				  var key = document.createElement('span');
-                  key.id = "key_"+loadedMedia[0]._id;
-                  key.style.display	= "block";
-                  key.style.float	= "left";
-                  key.style.margin = "4px";
-                  key.style.padding	= "4px";
-                  key.style.fontSize = "11px";
-                  key.innerHTML = "<strong>" + loadedMedia[0].key.toUpperCase() + "</strong>: " + loadedMedia[0].metadata.name;
-                  key.onclick = function() {
-                    rtPlayer.stop(media.id);
-                  };
 
-    				  keyContainer.appendChild(key);
-				    }
-        	});
-        	
-        	rtPlayer.on('play', function(media) {
-        		var key = document.getElementById("key_"+media.id);
-        		if (key) {
-        			key.style.background = "#FF2222";
-              key.style.cursor = "pointer";
-        		}
-        	});
-        	
-        	rtPlayer.on('finished', function(media) {
-        		var key = document.getElementById("key_"+media.id);
-        		if (key) {
-        			key.style.background = "";
-              key.style.cursor = "default";
-        		}
-        	});
-        	
-        	rtPlayer.on('stop', function(media) {
-        		var key = document.getElementById("key_"+media.id);
-        		if (key) {
-        			key.style.background = "";
-              key.style.cursor = "default";
-        		}
-        	});
-        	
           rtPlayer.init({
             debug:  true,
             console: true,

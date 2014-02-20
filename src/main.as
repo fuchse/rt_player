@@ -78,7 +78,7 @@ package
 					if (Math.ceil(this.channels[sound.id].position) >= Math.ceil(sound.length))
 					{
 						sound.playing = false;
-						eiEvent("finished", sound.forEvent());
+						eiEvent("finish", sound.forEvent());
 					}
 				}
 			}
@@ -145,7 +145,7 @@ package
 				this.sounds[sound.id]	= sound;
 				this.channels[sound.id] = new SoundChannel();
 				
-				eiEvent("load", this.sounds[sound.id].forEvent());
+				eiEvent("load_start", this.sounds[sound.id].forEvent());
 			}
 			
 			return files.length;
@@ -198,7 +198,7 @@ package
 		}
 		
 		
-		private function play(fileIdOrIds:*, options:Object = null):void
+		private function play(fileIdOrIds:*, options:Object = null):*
 		{
 			var fileIds:Array = getQualifiedClassName(fileIdOrIds) === "String" ? new Array(fileIdOrIds) : fileIdOrIds;
 			
@@ -272,7 +272,7 @@ package
 		private function soundLoadComplete(event:Event):void
 		{
 			event.target.removeEventListener(Event.COMPLETE, soundLoadComplete);
-			eiEvent('loaded', this.sounds[event.target.id].forEvent());
+			eiEvent('load', this.sounds[event.target.id].forEvent());
 		}
 		
 		private function soundLoadProgress(event:ProgressEvent):void
