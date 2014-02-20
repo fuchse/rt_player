@@ -36,9 +36,9 @@
             
         <script type="text/javascript" src="swfobject.js"></script>
         <script type="text/javascript" src="mousetrap.js"></script>
-        <script type="text/javascript" src="interface.js"></script>
+        <script type="text/javascript" src="rt_player.js"></script>
         <script type="text/javascript">
-			    		
+
           var testMedia = [
             {
               key: 'q', 
@@ -162,42 +162,55 @@
         	});
         	
           rtPlayer.init({
+            debug:  true,
+            console: true,
             swfobject: {
               containerId: 		    "flashContent",
               movieName: 			    "main",
               swf:				        "main.swf",
               swfVersionStr: 		  "11.4.0",
               expressInstallSwf:	"playerProductInstall.swf",
-              height:				      "100%",
-              width:				      "100%",
+              height:             "100%",
+              width:              "100%",
               bgColor:			      "#ffffff"
-            },
-            debug:  true
+            }
         	});
         	
         </script>
+        <style type="text/css">
+          #flashContentWrapper {
+            border: 1px solid #99FF99;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 50px;
+          }
+          #keys {
+            border: 1px solid #9999FF;
+            position: absolute;
+            height: 30px;
+            left: 10px;
+            right: 50px;
+            bottom: 10px;
+          }
+          #stopAll {
+            display: block;
+            border: 1px solid #FF2222;
+            background: #FF2222;
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            width: 30px;
+            height: 30px;
+          }
+        </style>
     </head>
     <body>
-        <div style="border: 1px solid #99FF99; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 50px;">
-        
-	        <div id="flashContent">
-	            <p>
-	                To view this page ensure that Adobe Flash Player version 
-	                11.4.0 or greater is installed. 
-	            </p>
-	            <script type="text/javascript"> 
-	                var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
-	                document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
-	                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
-	            </script> 
-	        </div>
-        
+        <div id="flashContentWrapper">
+          <div id="flashContent"></div>
         </div>
-         
-        <div style="border: 1px solid #9999FF; position: absolute; height: 30px; left: 10px; right: 50px; bottom: 10px;" id="keys">
-        </div>
-
-        <a href="javascript:rtPlayer.stopAll();" style="display: block; border: 1px solid #FF2222; background: #FF2222; position: absolute; right: 10px; bottom: 10px; width: 30px; height: 30px;"></a>
-        
+        <div id="keys"></div>
+        <a id="stopAll" href="javascript:rtPlayer.stopAll();"></a>
    </body>
 </html>

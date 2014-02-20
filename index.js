@@ -1,1 +1,1 @@
-module.exports = require('./bin-debug/interface.js');
+module.exports = require('./bin-debug/rt_player.js');
